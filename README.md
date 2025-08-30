@@ -3,7 +3,7 @@
 ![gram-control](Design/marketplace/marquee.png)
 
 
-GramControl removes the unnecessary distractions of Instagram and lets you, once again, enjoy connecting with you friends and community.
+GramControl removes the unnecessary distractions of Instagram and lets you, once again, enjoy connecting with your friends and community.
 
 Currently we support the following customizable options with more to come:
 
