@@ -14,6 +14,12 @@ Currently we support the following customizable options with more to come:
 
 GramControl is open-source, lightweight, reliable, and intuitive. It never saves, sends, or uses any of your information for purposes other than its core functionality.
 
+## Install from Web Store
+
+- [Chrome Web Store](https://chromewebstore.google.com/detail/gramcontrol-%E2%80%93-block-insta/opfbphbmpekblencogampchiepebfmnm)
+- [Firefox Add-Ons](https://addons.mozilla.org/en-US/firefox/addon/block-instagram-distractions/)
+- [Edge Add-Ons](https://microsoftedge.microsoft.com/addons/detail/gramcontrol-%E2%80%93-block-insta/mgmeddnpmecnhicccmpedjpcpgokfpbc)
+
 ## Install Locally (Chrome)
 
 1. Download the latest .zip file version from [https://github.com/Thinkorswim/gram-control/releases](https://github.com/Thinkorswim/gram-control/releases)

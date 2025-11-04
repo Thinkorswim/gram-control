@@ -38,9 +38,7 @@
   --sidebar-accent-foreground: 326.2810 71.5976% 33.1373%;
   --sidebar-border: 326.4706 100% 93.3333%;
   --sidebar-ring: 328.9286 94.9153% 46.2745%;
-  --font-sans: Poppins, sans-serif;
-  --font-serif: Playfair Display, serif;
-  --font-mono: Space Mono, monospace;
+
   --radius: 0.5rem;
   --shadow-2xs: 0px 3px 0px 0px hsl(330 70% 30% / 0.09);
   --shadow-xs: 0px 3px 0px 0px hsl(330 70% 30% / 0.09);
@@ -87,9 +85,7 @@
   --sidebar-accent-foreground: 300 100% 85.0980%;
   --sidebar-border: 281.4706 55.7377% 23.9216%;
   --sidebar-ring: 306.4865 100% 70.9804%;
-  --font-sans: Quicksand, sans-serif;
-  --font-serif: Playfair Display, serif;
-  --font-mono: Space Mono, monospace;
+
   --radius: 0.5rem;
   --shadow-2xs: 0px 3px 0px 0px hsl(300 80% 50% / 0.09);
   --shadow-xs: 0px 3px 0px 0px hsl(300 80% 50% / 0.09);

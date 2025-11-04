@@ -7,20 +7,28 @@ export default defineContentScript({
     let settings: Settings | null = null;
     let observers: MutationObserver[] = [];
     let processedHomeLinks = new Set<Element>();
+    let commentObserverActive = false;
+    let homeLinksObserverActive = false;
 
-    // Load settings from browser storage
-    const loadSettings = async (): Promise<Settings> => {
-      return new Promise((resolve) => {
-        browser.storage.local.get(["settings"], (data) => {
-          if (data.settings) {
-            resolve(Settings.fromJSON(data.settings));
-          } else {
-            // Use default settings if none found
-            resolve(new Settings());
-          }
+    // Load settings by requesting from the background script
+    const loadCurrentSettings = async (): Promise<Settings> => {
+      try {
+        const response = await browser.runtime.sendMessage({ 
+          type: "LOAD_SETTINGS" 
         });
-      });
+        
+        if (response.success) {
+          return response.data.settings;
+        } else {
+          throw new Error(response.error || 'Failed to load settings');
+        }
+      } catch (error) {
+        console.error('Error loading settings in content script:', error);
+        return new Settings();
+      }
     };
+
+    
     const removeExplorePageLink = () => {
       if (!settings?.explorePageDisabled) return;
 
@@ -46,7 +54,7 @@ export default defineContentScript({
     const removeReelsPageLink = () => {
       if (!settings?.reelsPageDisabled) return;
 
-      const reelsSvg = document.querySelector('svg[aria-label="Reels"]');
+      const reelsSvg = document.querySelector('svg[aria-label="Reels"].x5n08af');
       if (reelsSvg) {
         let currentElement = reelsSvg.parentElement;
         let divCount = 0;
@@ -144,9 +152,16 @@ export default defineContentScript({
         if (title.textContent && title.textContent.trim() === 'Comment') {
           try {
             // Remove the third-level parent of the Comment title
-            let targetElement = title.parentElement?.parentElement?.parentElement;
+            let targetElement = title.parentElement?.parentElement?.parentElement?.parentElement;
             if (targetElement) {
+              // Get the next sibling span before removing the target element
+              const nextSpan = targetElement.nextElementSibling;
               targetElement.remove();
+              
+              // Remove the next span if it exists
+              if (nextSpan && nextSpan.tagName.toLowerCase() === 'span') {
+                nextSpan.remove();
+              }
             }
           } catch (error) {
             console.log('Error removing comment icon:', error);
@@ -169,6 +184,7 @@ export default defineContentScript({
 
     const waitForCommentIconsAndRemove = () => {
       if (!settings?.commentsDisabled) return;
+      if (commentObserverActive) return; // Prevent duplicate observers
 
       // Only run on Instagram root page
       if (window.location.pathname !== '/' && window.location.pathname !== '') return;
@@ -193,6 +209,7 @@ export default defineContentScript({
       checkForCommentIcons();
 
       // Keep observer running continuously for infinite scroll, but only on root page
+      commentObserverActive = true;
       const commentObserver = new MutationObserver((mutations) => {
         checkForCommentIcons();
       });
@@ -340,6 +357,7 @@ export default defineContentScript({
 
     const waitForHomeLinksAndRedirect = () => {
       if (!settings?.recommendationsDisabled) return;
+      if (homeLinksObserverActive) return; // Prevent duplicate observers
 
       const checkForHomeLinks = () => {
         const homeLinks = document.querySelectorAll('a[href="/"]');
@@ -354,6 +372,7 @@ export default defineContentScript({
       checkForHomeLinks();
 
       // Keep observer running continuously for dynamically loaded content
+      homeLinksObserverActive = true;
       const linkObserver = new MutationObserver((mutations) => {
         checkForHomeLinks();
       });
@@ -370,11 +389,13 @@ export default defineContentScript({
     // Wait for DOM to be ready and then check for the element
     const initializeRemoval = async () => {
       // Load settings first
-      settings = await loadSettings();
+      settings = await loadCurrentSettings();
 
       const interceptNavigation = () => {
         const redirectIfNeeded = () => {
-          if (!settings?.recommendationsDisabled) return; 
+          if (!settings?.recommendationsDisabled) return;
+          if (location.hostname === "l.instagram.com") return;
+          
           if (location.pathname === "/" || location.pathname === "") {
             if (!location.search.includes("variant=following")) {
               location.replace("/?variant=following");
@@ -473,6 +494,8 @@ export default defineContentScript({
         observers.forEach(observer => observer.disconnect());
         observers.length = 0;
         processedHomeLinks.clear();
+        commentObserverActive = false;
+        homeLinksObserverActive = false;
       });
     };
 
@@ -480,9 +503,22 @@ export default defineContentScript({
     initializeRemoval();
 
     // Listen for settings changes from the popup
-    browser.storage.onChanged.addListener((changes, areaName) => {
+    browser.storage.onChanged.addListener(async (changes, areaName) => {
       if (areaName === 'local' && changes.settings) {
         settings = Settings.fromJSON(changes.settings.newValue);
+        
+        // Re-run all the removal functions when settings change
+        const removeElements = () => {
+          removeExplorePageLink();
+          removeReelsPageLink();
+          removeSuggestedForYouOnMainPage();
+          waitForSuggestedFriendsAndRemove();
+          removeStaticComments();
+          waitForCommentIconsAndRemove();
+          waitForHomeLinksAndRedirect();
+        };
+        
+        removeElements();
       }
     });
   },

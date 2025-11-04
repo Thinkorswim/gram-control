@@ -30,7 +30,6 @@ export class Settings {
     reelsPageDisabled: boolean;
     suggestedFriendsDisabled: boolean;
     commentsDisabled: boolean;
-
    }): Settings {
     return new Settings(
         json.recommendationsDisabled,
