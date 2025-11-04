@@ -7,14 +7,14 @@ export default defineConfig({
     // Handle permissions differently for Chrome/Edge (MV3) vs Firefox (MV2)
     if (browser === "chrome" || browser === "edge") {
       return {
-        permissions: ["storage", "identity"],
+        permissions: ["storage"],
         host_permissions: ["*://www.instagram.com/*"],
         optional_host_permissions: ["https://api.groundedmomentum.com/*"],
       };
     } else {
       // Firefox MV2
       return {
-        permissions: ["storage", "identity", "*://www.instagram.com/*"],
+        permissions: ["storage", "*://www.instagram.com/*"],
         optional_permissions: ["https://api.groundedmomentum.com/*"],
       };
     }
