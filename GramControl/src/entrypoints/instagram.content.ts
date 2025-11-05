@@ -74,40 +74,60 @@ export default defineContentScript({
     };
 
     const removeSuggestedForYouOnMainPage = () => {
-      if (!settings?.recommendationsDisabled) return;
+      if (!settings?.suggestedFriendsDisabled) return;
 
-      const targetDivs = document.querySelectorAll('div.x1dr59a3.x13vifvy.x7vhb2i.x6bx242');
-      if (targetDivs.length > 0) {
-        targetDivs.forEach(div => {
-          const firstChild = div.children[0];
-          if (firstChild && firstChild.children.length >= 3) {
-
-            // We remove in reverse order to avoid index shifting
-            if (firstChild.children[2]) {
-              console.log('Removing third child of first child in suggested for you');
-              firstChild.children[2].remove();
-            }
-            if (firstChild.children[1]) {
-              console.log('Removing second child of first child in suggested for you');
-              firstChild.children[1].remove();
-            }
-          }
-        });
+      // Find all span elements
+      const allSpans = document.querySelectorAll('span');
+      
+      // Find the first span that contains exactly "Suggested for you" text
+      const targetSpan = Array.from(allSpans).find(span => 
+        span.textContent?.trim() === 'Suggested for you'
+      );
+      
+      if (targetSpan) {
+        // Get the third parent element
+        let currentElement = targetSpan.parentElement;
+        let parentCount = 0;
+        
+        while (currentElement && parentCount < 3) {
+          currentElement = currentElement.parentElement;
+          parentCount++;
+        }
+        
+        // Remove the third parent if found
+        if (currentElement) {
+          console.log('Removing third parent of "Suggested for you" span');
+          currentElement.remove();
+        }
       }
     };
 
     const removeSuggestedForYouOnProfilePage = () => {
       if (!settings?.suggestedFriendsDisabled) return;
 
-      const targetHeaders = document.querySelectorAll('header.xrvj5dj.xl463y0.x1ec4g5p.xdj266r.xwy3nlu.xh8yej3');
-      if (targetHeaders.length > 0) {
-        targetHeaders.forEach(header => {
-          const parentDiv = header.parentElement;
-          if (parentDiv && parentDiv.children.length >= 4) {
-            const fourthChild = parentDiv.children[3];
-            fourthChild.remove();
-          }
-        });
+      // Find all h4 elements
+      const allH4s = document.querySelectorAll('h4');
+      
+      // Find the first h4 that contains exactly "Suggested for you" text
+      const targetH4 = Array.from(allH4s).find(h4 => 
+        h4.textContent?.trim() === 'Suggested for you'
+      );
+      
+      if (targetH4) {
+        // Get the third parent element
+        let currentElement = targetH4.parentElement;
+        let parentCount = 0;
+        
+        while (currentElement && parentCount < 2) {
+          currentElement = currentElement.parentElement;
+          parentCount++;
+        }
+        
+        // Remove the third parent if found
+        if (currentElement) {
+          console.log('Removing third parent of "Suggested for you" h4');
+          currentElement.remove();
+        }
       }
     };
 
@@ -288,16 +308,15 @@ export default defineContentScript({
       if (!settings?.suggestedFriendsDisabled) return;
 
       const checkForContent = () => {
-        const targetHeaders = document.querySelectorAll('header.xrvj5dj.xl463y0.x1ec4g5p.xdj266r.xwy3nlu.xh8yej3');
-        if (targetHeaders.length > 0) {
-          // Check if the parent has enough children (specifically the third child we need to remove)
-          for (const header of targetHeaders) {
-            const parentDiv = header.parentElement;
-            if (parentDiv && parentDiv.children.length >= 4) {
-              removeSuggestedForYouOnProfilePage();
-              return true;
-            }
-          }
+        // Look for h4 elements with "Suggested for you" text
+        const allH4s = document.querySelectorAll('h4');
+        const targetH4 = Array.from(allH4s).find(h4 => 
+          h4.textContent?.trim() === 'Suggested for you'
+        );
+        
+        if (targetH4) {
+          removeSuggestedForYouOnProfilePage();
+          return true;
         }
         return false;
       };
