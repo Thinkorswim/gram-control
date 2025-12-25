@@ -2,7 +2,7 @@
   "name": "GramControl – Block Instagram Distractions",
   "description": "Limit Instagram distractions like recommendations, reels, comments and suggestions.",
   "private": true,
-  "version": "4.0.0.1",
+  "version": "4.0.0.2",
   "type": "module",
   "scripts": {
     "dev": "wxt",

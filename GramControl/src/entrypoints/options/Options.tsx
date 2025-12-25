@@ -163,7 +163,7 @@ function Options() {
       const links = await getPaymentManagementLinks(authToken);
       setPaymentManagementLinks(links);
     } catch (error) {
-      setError("Failed to load payment management links");
+      console.log("Failed to load payment management links");
     }
     setIsLoadingManagementLinks(false);
   };
@@ -1036,7 +1036,7 @@ function Options() {
                 alt="Grounded Momentum Logo"
                 className="w-6 h-6 mr-2"
               />{" "}
-              Grounded Momentum <Dot className="w-2 h-2 mx-1" /> 2025{" "}
+              Grounded Momentum <Dot className="w-2 h-2 mx-1" /> 2026{" "}
             </div>
             <div className="flex items-center text-muted-foreground font-semibold">
               {ctaDiscordText}

@@ -1,4 +1,3 @@
-import { auth } from '../../../../gm-backend/src/utils/auth';
 export interface PaymentTokenResponse {
   token: string;
 }
