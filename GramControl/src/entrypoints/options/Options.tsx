@@ -13,6 +13,7 @@ import {
   XCircle,
   Calendar,
   Database,
+  Heart,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
@@ -456,15 +457,15 @@ function Options() {
                           </span>
                         </div>
                         <div className="flex items-center space-x-3">
-                          <Check className="w-5 h-5 text-primary" />
-                          <span className="text-primary text-sm">
-                            Support further open-source development
-                          </span>
-                        </div>
-                        <div className="flex items-center space-x-3">
                           <Crown className="w-5 h-5 text-primary" />
                           <span className="text-primary text-sm">
                             Plus features for all Grounded Momentum products
+                          </span>
+                        </div>
+                        <div className="flex items-center space-x-3">
+                          <Heart className="w-5 h-5 text-primary" />
+                          <span className="text-primary text-sm">
+                            Support further open-source development
                           </span>
                         </div>
                       </div>
@@ -1029,9 +1030,19 @@ function Options() {
 
         <footer className="bg-muted rounded-t-lg py-5 px-8 mt-10">
           <div className="container mx-auto flex justify-between items-center text-xs">
-            <a href="https://groundedmomentum.com/" target="_blank" rel="noopener noreferrer" className="flex items-center text-muted-foreground font-semibold transition-colors">
-              <img src="/images/gm_logo_pink.svg" alt="Grounded Momentum Logo" className="w-6 h-6 mr-2" /> Grounded Momentum <Dot className='w-2 h-2 mx-1' /> 2026
-            </a>    
+            <a
+              href="https://groundedmomentum.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center text-muted-foreground font-semibold transition-colors"
+            >
+              <img
+                src="/images/gm_logo_pink.svg"
+                alt="Grounded Momentum Logo"
+                className="w-6 h-6 mr-2"
+              />{" "}
+              Grounded Momentum <Dot className="w-2 h-2 mx-1" /> 2026
+            </a>
             <div className="flex items-center text-muted-foreground font-semibold">
               {ctaDiscordText}
               <div className="flex items-center">
