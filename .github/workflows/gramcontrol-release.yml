@@ -39,9 +39,9 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.version.outputs.value }}
-          name: Cadence v${{ steps.version.outputs.value }}
+          name: GramControl v${{ steps.version.outputs.value }}
           body: Auto-generated release
           files: |
-            Cadence/dist/cadence-chrome.zip
-            Cadence/dist/cadence-firefox.zip
-            Cadence/dist/cadence-edge.zip
+            GramControl/dist/gramcontrol-chrome.zip
+            GramControl/dist/gramcontrol-firefox.zip
+            GramControl/dist/gramcontrol-edge.zip
