@@ -1,4 +1,5 @@
 import { Settings } from './models/Settings';
+import { translations, selectors, matchesTranslation } from '../translations/instagram';
 
 export default defineContentScript({
   matches: ['*://*.instagram.com/*'],
@@ -32,7 +33,8 @@ export default defineContentScript({
     const removeExplorePageLink = () => {
       if (!settings?.explorePageDisabled) return;
 
-      const exploreSvg = document.querySelector('svg[aria-label="Explore"]');
+      // Single query for all language variations (much more efficient)
+      const exploreSvg = document.querySelector(selectors.explore);
       if (exploreSvg) {
         let currentElement = exploreSvg.parentElement;
         let divCount = 0;
@@ -54,7 +56,8 @@ export default defineContentScript({
     const removeReelsPageLink = () => {
       if (!settings?.reelsPageDisabled) return;
 
-      const reelsSvg = document.querySelector('svg[aria-label="Reels"].x5n08af');
+      // Single query for all language variations (much more efficient)
+      const reelsSvg = document.querySelector(selectors.reels);
       if (reelsSvg) {
         let currentElement = reelsSvg.parentElement;
         let divCount = 0;
@@ -79,9 +82,9 @@ export default defineContentScript({
       // Find all span elements
       const allSpans = document.querySelectorAll('span');
       
-      // Find the first span that contains exactly "Suggested for you" text
+      // Find the first span that contains "Suggested for you" text in any language
       const targetSpan = Array.from(allSpans).find(span => 
-        span.textContent?.trim() === 'Suggested for you'
+        matchesTranslation(span.textContent, translations.suggestedForYou)
       );
       
       if (targetSpan) {
@@ -108,9 +111,9 @@ export default defineContentScript({
       // Find all h4 elements
       const allH4s = document.querySelectorAll('h4');
       
-      // Find the first h4 that contains exactly "Suggested for you" text
+      // Find the first h4 that contains "Suggested for you" text in any language
       const targetH4 = Array.from(allH4s).find(h4 => 
-        h4.textContent?.trim() === 'Suggested for you'
+        matchesTranslation(h4.textContent, translations.suggestedForYou)
       );
       
       if (targetH4) {
@@ -169,7 +172,8 @@ export default defineContentScript({
 
       const titleElements = document.querySelectorAll('title');
       titleElements.forEach(title => {
-        if (title.textContent && title.textContent.trim() === 'Comment') {
+        // Check if title matches any translation for "Comment"
+        if (matchesTranslation(title.textContent, translations.comment)) {
           try {
             // Remove the third-level parent of the Comment title
             let targetElement = title.parentElement?.parentElement?.parentElement?.parentElement;
@@ -188,18 +192,6 @@ export default defineContentScript({
           }
         }
       });
-
-      // Also remove "View all" comments links
-      const allSpans = document.querySelectorAll('span');
-      allSpans.forEach(span => {
-        if (span.textContent && span.textContent.trim().toLowerCase().includes('view all')) {
-          try {
-            span.remove();
-          } catch (error) {
-            console.log('Error removing View all span:', error);
-          }
-        }
-      });
     };
 
     const waitForCommentIconsAndRemove = () => {
@@ -215,7 +207,7 @@ export default defineContentScript({
 
         const titleElements = document.querySelectorAll('title');
         const commentTitles = Array.from(titleElements).filter(title =>
-          title.textContent && title.textContent.trim() === 'Comment'
+          matchesTranslation(title.textContent, translations.comment)
         );
 
         if (commentTitles.some(title => title.parentElement?.parentElement?.parentElement)) {
@@ -308,10 +300,10 @@ export default defineContentScript({
       if (!settings?.suggestedFriendsDisabled) return;
 
       const checkForContent = () => {
-        // Look for h4 elements with "Suggested for you" text
+        // Look for h4 elements with "Suggested for you" text in any language
         const allH4s = document.querySelectorAll('h4');
         const targetH4 = Array.from(allH4s).find(h4 => 
-          h4.textContent?.trim() === 'Suggested for you'
+          matchesTranslation(h4.textContent, translations.suggestedForYou)
         );
         
         if (targetH4) {
@@ -482,9 +474,12 @@ export default defineContentScript({
             for (const node of mutation.addedNodes) {
               if (node.nodeType === Node.ELEMENT_NODE) {
                 const element = node as Element;
-                // Check if the added node contains our target elements
-                if ((settings?.explorePageDisabled && element.querySelector?.('svg[aria-label="Explore"]')) ||
-                  (settings?.reelsPageDisabled && element.querySelector?.('svg[aria-label="Reels"]')) ||
+                // Check if the added node contains our target elements (using pre-built selectors)
+                const hasExplore = settings?.explorePageDisabled && element.querySelector?.(selectors.explore);
+                const hasReels = settings?.reelsPageDisabled && element.querySelector?.(selectors.reels);
+                
+                if (hasExplore ||
+                  hasReels ||
                   (settings?.recommendationsDisabled && element.querySelector?.('div.x1dr59a3.x13vifvy.x7vhb2i.x6bx242')) ||
                   (settings?.recommendationsDisabled && element.classList?.contains('x1dr59a3') && element.classList?.contains('x13vifvy')) ||
                   (settings?.suggestedFriendsDisabled && element.querySelector?.('header.xrvj5dj.xl463y0.x1ec4g5p')) ||

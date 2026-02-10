@@ -1,66 +1,82 @@
 import { exec } from "child_process";
-import { rename, unlink } from "fs/promises";
+import { promisify } from "util";
+import { readdir, rename, unlink } from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
 
-// Setup __dirname in ESM
+// ESM __dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// dist directory
 const DIST_DIR = path.join(__dirname, "../dist");
 
-const renameZip = async ({ command, expectedZips }) => {
-  exec(command, async (error, stdout, stderr) => {
-    if (error) {
-      console.error(`❌ Error running ${command}:\n${stderr}`);
-      process.exit(1);
+// Promisified exec
+const execAsync = promisify(exec);
+
+// Small delay to avoid CI FS race conditions
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+/**
+ * Run a command, then find & rename a zip file in dist/
+ */
+const runAndRenameZip = async ({ command, filter, renameTo }) => {
+  if (command) {
+    const { stderr } = await execAsync(command);
+
+    if (stderr && !stderr.includes("Some chunks are larger than 500 kB")) {
+      console.warn(`Warning from "${command}":\n${stderr}`);
     }
 
-    console.log(stdout);
+    console.log(`Zip creation succeeded for command: "${command}"`);
+  }
 
-    for (const [matchPattern, newName] of expectedZips) {
-      const match = stdout.match(matchPattern);
-      if (!match) {
-        console.error(`❌ Could not find match for: ${matchPattern}`);
-        continue;
-      }
+  // CI filesystem can lag slightly
+  await sleep(300);
 
-      const original = path.join(DIST_DIR, path.basename(match[0]));
-      const renamed = path.join(DIST_DIR, newName);
+  const files = await readdir(DIST_DIR);
+  const match = files.find(filter);
 
-      try {
-        // Remove existing file if it exists
-        await unlink(renamed).catch(() => { });
-        await rename(original, renamed);
-        console.log(`✔ Renamed: ${path.basename(original)} → ${newName}`);
-      } catch (err) {
-        console.error(`❌ Failed to rename ${original}: ${err}`);
-      }
-    }
-  });
+  if (!match) {
+    console.error("No matching zip found");
+    console.error("Files in dist/:", files);
+    throw new Error("Zip file not found");
+  }
+
+  const from = path.join(DIST_DIR, match);
+  const to = path.join(DIST_DIR, renameTo);
+
+  await unlink(to).catch(() => { });
+  await rename(from, to);
+
+  console.log(`Renamed: ${match} → ${renameTo}`);
 };
 
-// Chrome
-await renameZip({
+/* -------------------- Chrome -------------------- */
+await runAndRenameZip({
   command: "npm run zip",
-  expectedZips: [
-    [/dist\/([^\s]+chrome\.zip)/, "gramcontrol-chrome.zip"]
-  ]
+  filter: (f) => f.endsWith("-chrome.zip"),
+  renameTo: "gramcontrol-chrome.zip",
 });
 
-// Firefox
-await renameZip({
+/* -------------------- Firefox -------------------- */
+await runAndRenameZip({
   command: "npm run zip:firefox",
-  expectedZips: [
-    [/dist\/([^\s]+firefox\.zip)/, "gramcontrol-firefox.zip"],
-    [/dist\/([^\s]+sources\.zip)/, "gramcontrol-firefox-sources.zip"]
-  ]
+  filter: (f) => f.endsWith("-firefox.zip"),
+  renameTo: "gramcontrol-firefox.zip",
 });
 
-// Edge
-await renameZip({
-  command: "npm run zip:edge",
-  expectedZips: [
-    [/dist\/([^\s]+edge\.zip)/, "gramcontrol-edge.zip"]
-  ]
+await runAndRenameZip({
+  command: null, // already created by previous step
+  filter: (f) => f.endsWith("-sources.zip"),
+  renameTo: "gramcontrol-firefox-sources.zip",
 });
+
+/* -------------------- Edge -------------------- */
+await runAndRenameZip({
+  command: "npm run zip:edge",
+  filter: (f) => f.endsWith("-edge.zip"),
+  renameTo: "gramcontrol-edge.zip",
+});
+
+console.log("All extension zips created and renamed successfully");
