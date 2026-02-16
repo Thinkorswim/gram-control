@@ -105,6 +105,29 @@ function Popup() {
             Instagram Control
           </div>
           {isProUser ? (
+            <span
+              onClick={() => {
+                const url = browser.runtime.getURL('/options.html');
+                browser.tabs.create({ url });
+              }}
+              className="mr-1 cursor-pointer w-22 px-1 text-center bg-gradient-to-r from-chart-1 to-chart-2 py-0.5 text-xs  text-white border-primary/50 rounded-full font-semibold flex items-center justify-center transition-all duration-100 hover:scale-105"
+            >
+              <Sparkles className="inline-block w-3 h-3 mr-1" />
+              Plus
+            </span>
+          ) : (
+            <span
+              onClick={() => {
+                const url = browser.runtime.getURL('/options.html');
+                browser.tabs.create({ url });
+              }}
+              className="mr-1 cursor-pointer w-34 px-1 text-center bg-gradient-to-r from-chart-1 to-chart-2 py-0.5 text-xs  text-white border-primary/50 rounded-full font-semibold flex items-center justify-center transition-all duration-100 hover:scale-105"
+            >
+              <Sparkles className="inline-block w-3 h-3 mr-1" />
+              Get Plus
+            </span>
+          )}
+          {/* {isProUser ? (
             <span className="mr-1 px-1 text-center py-0.5 w-22 text-xs bg-gradient-to-r from-[#e496be] to-[#E6067A] text-white rounded-full font-semibold">
               <Sparkles className="inline-block w-3 h-3 mr-1" />
               Plus
@@ -117,7 +140,7 @@ function Popup() {
               <Sparkles className="inline-block w-3 h-3 mr-1" />
               Get Plus
             </span>
-          )}
+          )} */}
         </div>
 
         <div className="flex items-center justify-end space-x-2">
