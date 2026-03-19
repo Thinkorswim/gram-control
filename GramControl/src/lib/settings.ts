@@ -9,7 +9,7 @@ export const saveSettings = async (
   await browser.storage.local.set({ settings: settings.toJSON() });
 
   // If user is Pro, also save to the cloud
-  if (user && user.isPro) {
+  if (user && user.extensionsPlus) {
     try {
       const response = await fetch("https://api.groundedmomentum.com/api/gramcontrol", {
         method: "PUT",
@@ -57,7 +57,7 @@ export const loadSettings = async (): Promise<{
 
         const settings = Settings.fromJSON(result.settings);
 
-        if (user && user.isPro) {
+        if (user && user.extensionsPlus) {
           const response = await fetch(
             "https://api.groundedmomentum.com/api/gramcontrol",
             {

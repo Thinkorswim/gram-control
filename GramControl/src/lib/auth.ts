@@ -5,9 +5,7 @@ export interface AuthResponse {
     email: string;
     emailVerified: boolean;
     authToken: string;
-    isPro?: boolean;
-    nextBillingDate?: string;
-    billingCycle?: "monthly" | "yearly";
+    extensionsPlus?: boolean;
   };
 
   message?: string;
@@ -18,9 +16,7 @@ export interface UserData {
     email: string;
     emailVerified: boolean;
     authToken: string;
-    isPro: boolean;
-    nextBillingDate?: string;
-    billingCycle?: "monthly" | "yearly";
+    extensionsPlus: boolean;
   };
 }
 
@@ -162,9 +158,7 @@ export const loadUserFromStorage = async (): Promise<User | null> => {
         email: freshUserData.data.email,
         emailVerified: freshUserData.data.emailVerified || false,
         authToken: savedUser.authToken,
-        isPro: freshUserData.data.isPro || false,
-        nextBillingDate: freshUserData.data.nextBillingDate,
-        billingCycle: freshUserData.data.billingCycle,
+        extensionsPlus: freshUserData.data.extensionsPlus || false,
       };
       const updatedUser = User.fromJSON(updatedUserData);
       saveUserToStorage(updatedUser);

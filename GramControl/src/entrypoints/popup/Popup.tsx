@@ -28,7 +28,7 @@ function Popup() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
-  const [isProUser, setIsProUser] = useState(false);
+  const [extensionsPlusUser, setIsProUser] = useState(false);
 
   useEffect(() => {
     const loadCurrentSettings = async () => {
@@ -43,7 +43,7 @@ function Popup() {
         setSettings(loadedSettings.settings);
         setUser(loadedSettings.user);
         setIsProUser(
-          loadedSettings.user !== undefined && loadedSettings.user.isPro
+          loadedSettings.user !== undefined && loadedSettings.user.extensionsPlus
         );
       } catch (err) {
         console.error("Error loading settings:", err);
@@ -104,7 +104,7 @@ function Popup() {
           <div className="text-primary w-full ml-2 font-black text-base">
             Instagram Control
           </div>
-          {isProUser ? (
+          {extensionsPlusUser ? (
             <span
               onClick={() => {
                 const url = browser.runtime.getURL('/options.html');
@@ -127,7 +127,7 @@ function Popup() {
               Get Plus
             </span>
           )}
-          {/* {isProUser ? (
+          {/* {extensionsPlusUser ? (
             <span className="mr-1 px-1 text-center py-0.5 w-22 text-xs bg-gradient-to-r from-[#e496be] to-[#E6067A] text-white rounded-full font-semibold">
               <Sparkles className="inline-block w-3 h-3 mr-1" />
               Plus
@@ -150,7 +150,7 @@ function Popup() {
             </div>
           )}
 
-          {isProUser && !isSaving && (
+          {extensionsPlusUser && !isSaving && (
             <Cog
               className="w-5 h-5 text-chart-1 cursor-pointer"
               onClick={() => browser.runtime.openOptionsPage()}
