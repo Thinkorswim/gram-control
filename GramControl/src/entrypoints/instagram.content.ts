@@ -10,6 +10,7 @@ export default defineContentScript({
     let processedHomeLinks = new Set<Element>();
     let commentObserverActive = false;
     let homeLinksObserverActive = false;
+    const STORY_TRAY_HIDE_STYLE_ID = 'gram-control-hide-story-tray-suggestions';
 
     // Load settings by requesting from the background script
     const loadCurrentSettings = async (): Promise<Settings> => {
@@ -103,6 +104,24 @@ export default defineContentScript({
           currentElement.remove();
         }
       }
+    };
+
+    // Hide suggested-friend tiles in the story tray via CSS
+    const applyStoryTraySuggestionStyle = () => {
+      const existing = document.getElementById(STORY_TRAY_HIDE_STYLE_ID);
+      if (!settings?.suggestedFriendsDisabled) {
+        existing?.remove();
+        return;
+      }
+      if (existing) return;
+      const style = document.createElement('style');
+      style.id = STORY_TRAY_HIDE_STYLE_ID;
+      style.textContent =
+        '[data-pagelet="story_tray"] li:has(a),' +
+        '[data-pagelet="story_tray"] li:has(a) ~ li,' +
+        '[data-pagelet="story_tray"] li:empty' +
+        ' { display: none !important; }';
+      (document.head || document.documentElement).appendChild(style);
     };
 
     const removeSuggestedForYouOnProfilePage = () => {
@@ -439,6 +458,7 @@ export default defineContentScript({
         removeExplorePageLink();
         removeReelsPageLink();
         removeSuggestedForYouOnMainPage();
+        applyStoryTraySuggestionStyle();
         waitForSuggestedFriendsAndRemove();
         removeStaticComments();
         waitForCommentIconsAndRemove();
@@ -526,6 +546,7 @@ export default defineContentScript({
           removeExplorePageLink();
           removeReelsPageLink();
           removeSuggestedForYouOnMainPage();
+          applyStoryTraySuggestionStyle();
           waitForSuggestedFriendsAndRemove();
           removeStaticComments();
           waitForCommentIconsAndRemove();
