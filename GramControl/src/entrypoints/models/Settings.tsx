@@ -6,14 +6,16 @@ export class Settings {
     public reelsPageDisabled: boolean = true,
     public suggestedFriendsDisabled: boolean = true,
     public commentsDisabled: boolean = true,
+    public hideStoriesOnMainPage: boolean = false,
   ) {}
 
-  toJSON(): { 
+  toJSON(): {
     recommendationsDisabled: boolean;
     explorePageDisabled: boolean;
     reelsPageDisabled: boolean;
     suggestedFriendsDisabled: boolean;
     commentsDisabled: boolean;
+    hideStoriesOnMainPage: boolean;
    } {
     return {
         recommendationsDisabled: this.recommendationsDisabled,
@@ -21,6 +23,7 @@ export class Settings {
         reelsPageDisabled: this.reelsPageDisabled,
         suggestedFriendsDisabled: this.suggestedFriendsDisabled,
         commentsDisabled: this.commentsDisabled,
+        hideStoriesOnMainPage: this.hideStoriesOnMainPage,
     };
   }
 
@@ -30,6 +33,7 @@ export class Settings {
     reelsPageDisabled: boolean;
     suggestedFriendsDisabled: boolean;
     commentsDisabled: boolean;
+    hideStoriesOnMainPage: boolean;
    }): Settings {
     return new Settings(
         json.recommendationsDisabled,
@@ -37,6 +41,7 @@ export class Settings {
         json.reelsPageDisabled,
         json.suggestedFriendsDisabled,
         json.commentsDisabled,
+        json.hideStoriesOnMainPage,
     );
   }
 }

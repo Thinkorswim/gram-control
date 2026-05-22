@@ -124,6 +124,38 @@ export default defineContentScript({
       (document.head || document.documentElement).appendChild(style);
     };
 
+    // Remove the entire story tray from the main feed (waits for it to load)
+    const hideMainPageStories = () => {
+      if (!settings?.hideStoriesOnMainPage) return;
+
+      const removeStoryTray = () => {
+        document
+          .querySelectorAll('[data-pagelet="story_tray"]')
+          .forEach((el) => el.remove());
+      };
+
+      // Try immediately first
+      removeStoryTray();
+
+      // The story tray loads asynchronously and re-renders, so keep watching
+      const contentObserver = new MutationObserver(() => {
+        removeStoryTray();
+      });
+      observers.push(contentObserver);
+
+      contentObserver.observe(document.body || document.documentElement, {
+        childList: true,
+        subtree: true
+      });
+
+      // Stop watching after the feed has settled
+      setTimeout(() => {
+        contentObserver.disconnect();
+        const index = observers.indexOf(contentObserver);
+        if (index > -1) observers.splice(index, 1);
+      }, 10000); // 10 second max wait
+    };
+
     const removeSuggestedForYouOnProfilePage = () => {
       if (!settings?.suggestedFriendsDisabled) return;
 
@@ -459,6 +491,7 @@ export default defineContentScript({
         removeReelsPageLink();
         removeSuggestedForYouOnMainPage();
         applyStoryTraySuggestionStyle();
+        hideMainPageStories();
         waitForSuggestedFriendsAndRemove();
         removeStaticComments();
         waitForCommentIconsAndRemove();
@@ -504,6 +537,8 @@ export default defineContentScript({
                   (settings?.recommendationsDisabled && element.classList?.contains('x1dr59a3') && element.classList?.contains('x13vifvy')) ||
                   (settings?.suggestedFriendsDisabled && element.querySelector?.('header.xrvj5dj.xl463y0.x1ec4g5p')) ||
                   (settings?.suggestedFriendsDisabled && element.classList?.contains('xrvj5dj') && element.classList?.contains('xl463y0')) ||
+                  (settings?.hideStoriesOnMainPage && element.querySelector?.('[data-pagelet="story_tray"]')) ||
+                  (settings?.hideStoriesOnMainPage && element.matches?.('[data-pagelet="story_tray"]')) ||
                   (settings?.commentsDisabled && element.querySelector?.('ul._a9ym')) ||
                   (settings?.commentsDisabled && element.classList?.contains('_a9ym')) ||
                   (settings?.recommendationsDisabled && element.querySelector?.('a[href="/"]')) ||
@@ -538,7 +573,7 @@ export default defineContentScript({
 
     // Listen for settings changes from the popup
     browser.storage.onChanged.addListener(async (changes, areaName) => {
-      if (areaName === 'local' && changes.settings) {
+      if (areaName === 'sync' && changes.settings) {
         settings = Settings.fromJSON(changes.settings.newValue);
         
         // Re-run all the removal functions when settings change
@@ -547,6 +582,7 @@ export default defineContentScript({
           removeReelsPageLink();
           removeSuggestedForYouOnMainPage();
           applyStoryTraySuggestionStyle();
+          hideMainPageStories();
           waitForSuggestedFriendsAndRemove();
           removeStaticComments();
           waitForCommentIconsAndRemove();
