@@ -6,26 +6,37 @@ import { Button } from "@/components/ui/button";
 import { Settings } from "../models/Settings";
 import { SettingsToggles } from "@/components/SettingsToggles";
 import { loadSettings, saveSettings } from "@/lib/settings";
+import {
+  t,
+  useLocale,
+  SUPPORTED_LOCALES,
+  setActiveLocale,
+  type LocaleCode,
+} from "@/lib/i18n";
+
+const DISCORD_CTA_KEYS = [
+  "options.discordCta1",
+  "options.discordCta2",
+  "options.discordCta3",
+  "options.discordCta4",
+  "options.discordCta5",
+  "options.discordCta6",
+] as const;
 
 function Options() {
+  const activeLocale = useLocale();
   const [settings, setSettings] = useState<Settings>(new Settings());
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [ctaDiscordText, setCtaDiscordText] = useState<string>("");
+  const [ctaKey, setCtaKey] = useState<(typeof DISCORD_CTA_KEYS)[number]>(
+    DISCORD_CTA_KEYS[0]
+  );
 
   const version = browser.runtime.getManifest().version;
 
   useEffect(() => {
-    const ctaDiscordTexts: string[] = [
-      "Have a question? Join the",
-      "Need help? Join the",
-      "Have a suggestion? Join the",
-      "Want to chat? Join the",
-      "Like productivity? Join the",
-      "Have feedback? Join the",
-    ];
-    setCtaDiscordText(
-      ctaDiscordTexts[Math.floor(Math.random() * ctaDiscordTexts.length)]
+    setCtaKey(
+      DISCORD_CTA_KEYS[Math.floor(Math.random() * DISCORD_CTA_KEYS.length)]
     );
 
     const loadCurrentSettings = async () => {
@@ -36,7 +47,7 @@ function Options() {
         setSettings(loaded.settings);
       } catch (err) {
         console.error("Error loading settings:", err);
-        setError("Failed to load settings");
+        setError(t("options.loadFailed"));
       } finally {
         setIsLoading(false);
       }
@@ -51,8 +62,12 @@ function Options() {
     try {
       await saveSettings(updatedSettings);
     } catch (err) {
-      setError("Failed to save settings. Please try again.");
+      setError(t("options.saveFailed"));
     }
+  };
+
+  const handleLocaleChange = (value: string) => {
+    void setActiveLocale(value === "auto" ? null : (value as LocaleCode));
   };
 
   return (
@@ -64,7 +79,7 @@ function Options() {
             alt="Logo"
             className="w-10 h-10 mr-4"
           />
-          <h1 className="text-xl font-black text-primary">Instagram Control</h1>
+          <h1 className="text-xl font-black text-primary">{t("appName")}</h1>
         </div>
 
         {error && (
@@ -76,24 +91,42 @@ function Options() {
 
         {/* Settings */}
         <section className="bg-muted/50 rounded-2xl p-6 max-w-md">
-          <h2 className="text-base font-bold mb-1">Settings</h2>
+          <h2 className="text-base font-bold mb-1">
+            {t("options.settingsHeader")}
+          </h2>
           <p className="text-sm text-muted-foreground mb-5">
-            Your settings sync automatically across devices where you're signed
-            into your browser.
+            {t("options.settingsSubtitle")}
           </p>
           {isLoading ? (
             <div className="py-6 flex flex-col items-center space-y-3">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-              <p className="text-sm text-gray-600">Loading settings...</p>
+              <p className="text-sm text-gray-600">{t("options.loading")}</p>
             </div>
           ) : (
             <SettingsToggles settings={settings} onChange={handleSettingsChange} />
           )}
         </section>
 
+        {/* Language */}
+        <section className="bg-muted/50 rounded-2xl p-6 max-w-md mt-6">
+          <h2 className="text-base font-bold mb-3">{t("options.language")}</h2>
+          <select
+            value={activeLocale ?? "auto"}
+            onChange={(e) => handleLocaleChange(e.target.value)}
+            className="w-full bg-white border border-input rounded-md px-3 py-2 text-sm"
+          >
+            <option value="auto">{t("options.languageAuto")}</option>
+            {SUPPORTED_LOCALES.map((loc) => (
+              <option key={loc.code} value={loc.code}>
+                {loc.nativeName}
+              </option>
+            ))}
+          </select>
+        </section>
+
         {/* About */}
         <section className="bg-muted/50 rounded-2xl p-6 max-w-md mt-6">
-          <h2 className="text-base font-bold mb-3">About</h2>
+          <h2 className="text-base font-bold mb-3">{t("options.aboutHeader")}</h2>
           <div className="flex items-center mb-3">
             <img
               src="/images/logo-256.png"
@@ -101,9 +134,9 @@ function Options() {
               className="w-8 h-8 mr-3"
             />
             <div>
-              <div className="text-sm font-semibold">Instagram Control</div>
+              <div className="text-sm font-semibold">{t("appName")}</div>
               <div className="text-xs text-muted-foreground">
-                Version {version} &middot; Free &amp; ad-free
+                {t("options.version", [version])}
               </div>
             </div>
           </div>
@@ -122,7 +155,7 @@ function Options() {
               rel="noopener noreferrer"
               className="text-primary font-semibold"
             >
-              Discord community
+              {t("options.discordCommunity")}
             </a>
           </div>
         </section>
@@ -144,7 +177,7 @@ function Options() {
             Grounded Momentum <Dot className="w-2 h-2 mx-1" /> 2026
           </a>
           <div className="flex items-center text-muted-foreground font-semibold">
-            {ctaDiscordText}
+            {t(ctaKey)}
             <div className="flex items-center">
               <Button
                 className="ml-3 rounded-lg"

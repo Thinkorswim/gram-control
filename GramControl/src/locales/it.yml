@@ -1,0 +1,51 @@
+extName: "GramControl – Blocca le distrazioni di Instagram"
+extShortName: "GramControl"
+extDescription: "Riduci le distrazioni di Instagram come consigli, Reels, commenti e suggerimenti."
+
+appName: "Instagram Control"
+
+popup:
+  loading: "Caricamento impostazioni..."
+  loadFailed: "Impossibile caricare le impostazioni"
+  saveFailed: "Impossibile salvare le impostazioni. Riprova."
+
+options:
+  settingsHeader: "Impostazioni"
+  settingsSubtitle: "Le tue impostazioni si sincronizzano automaticamente tra i dispositivi su cui hai effettuato l'accesso al tuo browser."
+  loading: "Caricamento impostazioni..."
+  loadFailed: "Impossibile caricare le impostazioni"
+  saveFailed: "Impossibile salvare le impostazioni. Riprova."
+
+  aboutHeader: "Informazioni"
+  version: "Versione $1 · Gratis e senza pubblicità"
+
+  language: "Lingua"
+  languageAuto: "Automatica (lingua del browser)"
+
+  discordCommunity: "Community Discord"
+  discordCta1: "Hai una domanda? Unisciti al"
+  discordCta2: "Ti serve aiuto? Unisciti al"
+  discordCta3: "Hai un suggerimento? Unisciti al"
+  discordCta4: "Vuoi fare due chiacchiere? Unisciti al"
+  discordCta5: "Ti piace la produttività? Unisciti al"
+  discordCta6: "Hai un feedback? Unisciti al"
+
+toggles:
+  recommendations:
+    label: "Disattiva i consigli"
+    tooltip: "Nasconde i post consigliati dal tuo feed"
+  explore:
+    label: "Disattiva la pagina Esplora"
+    tooltip: "Disattiva l'accesso alla pagina Esplora"
+  reels:
+    label: "Disattiva la pagina Reels"
+    tooltip: "Disattiva l'accesso alla pagina Reels"
+  suggestedFriends:
+    label: "Disattiva amici suggeriti"
+    tooltip: "Nasconde le sezioni con amici suggeriti"
+  comments:
+    label: "Disattiva i commenti"
+    tooltip: "Nasconde le sezioni dei commenti sotto i post"
+  hideStories:
+    label: "Nascondi le Storie dalla pagina principale"
+    tooltip: "Nasconde la barra delle Storie nel feed principale"

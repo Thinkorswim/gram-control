@@ -8,40 +8,17 @@ import {
 import { Info } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Settings } from "../entrypoints/models/Settings";
+import { t, useLocale } from "@/lib/i18n";
 
 type SettingKey = keyof ReturnType<Settings["toJSON"]>;
 
-const ROWS: { key: SettingKey; label: string; tooltip: string }[] = [
-  {
-    key: "recommendationsDisabled",
-    label: "Disable Recommendations",
-    tooltip: "Hide recommendation posts from your feed",
-  },
-  {
-    key: "explorePageDisabled",
-    label: "Disable Explore Page",
-    tooltip: "Disable access the Explore page",
-  },
-  {
-    key: "reelsPageDisabled",
-    label: "Disable Reels Page",
-    tooltip: "Disable access the Reels page",
-  },
-  {
-    key: "suggestedFriendsDisabled",
-    label: "Disable Suggested Friends",
-    tooltip: "Hide suggested friends sections",
-  },
-  {
-    key: "commentsDisabled",
-    label: "Disable Comments",
-    tooltip: "Hide comment sections on posts",
-  },
-  {
-    key: "hideStoriesOnMainPage",
-    label: "Hide Stories from Main Page",
-    tooltip: "Hide the stories tray from the main feed",
-  },
+const ROW_KEYS: { key: SettingKey; i18nGroup: string }[] = [
+  { key: "recommendationsDisabled", i18nGroup: "recommendations" },
+  { key: "explorePageDisabled", i18nGroup: "explore" },
+  { key: "reelsPageDisabled", i18nGroup: "reels" },
+  { key: "suggestedFriendsDisabled", i18nGroup: "suggestedFriends" },
+  { key: "commentsDisabled", i18nGroup: "comments" },
+  { key: "hideStoriesOnMainPage", i18nGroup: "hideStories" },
 ];
 
 interface SettingsTogglesProps {
@@ -50,6 +27,7 @@ interface SettingsTogglesProps {
 }
 
 export function SettingsToggles({ settings, onChange }: SettingsTogglesProps) {
+  useLocale();
   const values = settings.toJSON();
 
   const handleChange = (key: SettingKey, checked: boolean) => {
@@ -58,24 +36,24 @@ export function SettingsToggles({ settings, onChange }: SettingsTogglesProps) {
 
   return (
     <div className="space-y-4">
-      {ROWS.map((row) => (
+      {ROW_KEYS.map((row) => (
         <div
           key={row.key}
           className="flex items-center justify-between max-w-[300px]"
         >
-          <div className="flex items-center">
-            <Label className="text-sm" htmlFor={row.key}>
-              {row.label}
-            </Label>
+          <div className="text-sm pr-2">
+            <Label className="inline" htmlFor={row.key}>
+              {t(`toggles.${row.i18nGroup}.label` as Parameters<typeof t>[0])}
+            </Label>{" "}
             <TooltipProvider>
               <Tooltip delayDuration={0}>
                 <TooltipTrigger asChild>
-                  <button className="flex items-center justify-center ml-2 rounded-full">
+                  <button className="inline-flex items-center justify-center align-middle rounded-full">
                     <Info className="w-4 h-4 text-primary/30" />
                   </button>
                 </TooltipTrigger>
-                <TooltipContent className="bg-primary text-white p-2 rounded">
-                  {row.tooltip}
+                <TooltipContent className="bg-primary text-white p-2 rounded max-w-[280px] ![text-wrap:pretty]">
+                  {t(`toggles.${row.i18nGroup}.tooltip` as Parameters<typeof t>[0])}
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>

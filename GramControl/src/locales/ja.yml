@@ -1,0 +1,51 @@
+extName: "GramControl – Instagramの気が散る要素をブロック"
+extShortName: "GramControl"
+extDescription: "おすすめ、リール、コメント、提案など、Instagramで気が散る要素を減らします。"
+
+appName: "Instagram Control"
+
+popup:
+  loading: "設定を読み込み中..."
+  loadFailed: "設定の読み込みに失敗しました"
+  saveFailed: "設定の保存に失敗しました。もう一度お試しください。"
+
+options:
+  settingsHeader: "設定"
+  settingsSubtitle: "設定は、ブラウザにサインインしているデバイス間で自動的に同期されます。"
+  loading: "設定を読み込み中..."
+  loadFailed: "設定の読み込みに失敗しました"
+  saveFailed: "設定の保存に失敗しました。もう一度お試しください。"
+
+  aboutHeader: "概要"
+  version: "バージョン $1 · 無料・広告なし"
+
+  language: "言語"
+  languageAuto: "自動(ブラウザの言語)"
+
+  discordCommunity: "Discordコミュニティ"
+  discordCta1: "質問がありますか?"
+  discordCta2: "サポートが必要ですか?"
+  discordCta3: "ご提案がありますか?"
+  discordCta4: "雑談しませんか?"
+  discordCta5: "生産性に興味がありますか?"
+  discordCta6: "フィードバックがありますか?"
+
+toggles:
+  recommendations:
+    label: "おすすめを無効化"
+    tooltip: "フィードからおすすめの投稿を非表示にします"
+  explore:
+    label: "発見ページを無効化"
+    tooltip: "発見ページへのアクセスを無効化します"
+  reels:
+    label: "リールページを無効化"
+    tooltip: "リールページへのアクセスを無効化します"
+  suggestedFriends:
+    label: "おすすめの友達を無効化"
+    tooltip: "おすすめの友達セクションを非表示にします"
+  comments:
+    label: "コメントを無効化"
+    tooltip: "投稿のコメントセクションを非表示にします"
+  hideStories:
+    label: "メインページのストーリーズを非表示"
+    tooltip: "メインフィードのストーリーズトレイを非表示にします"

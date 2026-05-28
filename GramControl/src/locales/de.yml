@@ -1,0 +1,51 @@
+extName: "GramControl – Instagram-Ablenkungen blockieren"
+extShortName: "GramControl"
+extDescription: "Reduziere Instagram-Ablenkungen wie Empfehlungen, Reels, Kommentare und Vorschläge."
+
+appName: "Instagram Control"
+
+popup:
+  loading: "Einstellungen werden geladen..."
+  loadFailed: "Einstellungen konnten nicht geladen werden"
+  saveFailed: "Einstellungen konnten nicht gespeichert werden. Bitte erneut versuchen."
+
+options:
+  settingsHeader: "Einstellungen"
+  settingsSubtitle: "Deine Einstellungen werden automatisch zwischen allen Geräten synchronisiert, auf denen du in deinem Browser angemeldet bist."
+  loading: "Einstellungen werden geladen..."
+  loadFailed: "Einstellungen konnten nicht geladen werden"
+  saveFailed: "Einstellungen konnten nicht gespeichert werden. Bitte erneut versuchen."
+
+  aboutHeader: "Über"
+  version: "Version $1 · Kostenlos und werbefrei"
+
+  language: "Sprache"
+  languageAuto: "Automatisch (Browser-Sprache)"
+
+  discordCommunity: "Discord-Community"
+  discordCta1: "Eine Frage? Komm auf unseren"
+  discordCta2: "Brauchst du Hilfe? Komm auf unseren"
+  discordCta3: "Hast du einen Vorschlag? Komm auf unseren"
+  discordCta4: "Lust auf einen Chat? Komm auf unseren"
+  discordCta5: "Magst du Produktivität? Komm auf unseren"
+  discordCta6: "Hast du Feedback? Komm auf unseren"
+
+toggles:
+  recommendations:
+    label: "Empfehlungen deaktivieren"
+    tooltip: "Empfohlene Beiträge im Feed ausblenden"
+  explore:
+    label: "Entdecken-Seite deaktivieren"
+    tooltip: "Zugriff auf die Entdecken-Seite deaktivieren"
+  reels:
+    label: "Reels-Seite deaktivieren"
+    tooltip: "Zugriff auf die Reels-Seite deaktivieren"
+  suggestedFriends:
+    label: "Freundesvorschläge deaktivieren"
+    tooltip: "Bereiche mit Freundesvorschlägen ausblenden"
+  comments:
+    label: "Kommentare deaktivieren"
+    tooltip: "Kommentarbereiche unter Beiträgen ausblenden"
+  hideStories:
+    label: "Stories auf der Startseite ausblenden"
+    tooltip: "Die Stories-Leiste im Haupt-Feed ausblenden"

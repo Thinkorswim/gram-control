@@ -1,0 +1,51 @@
+extName: "GramControl – Bloquea las distracciones de Instagram"
+extShortName: "GramControl"
+extDescription: "Reduce las distracciones de Instagram como recomendaciones, reels, comentarios y sugerencias."
+
+appName: "Instagram Control"
+
+popup:
+  loading: "Cargando ajustes..."
+  loadFailed: "Error al cargar los ajustes"
+  saveFailed: "Error al guardar los ajustes. Inténtalo de nuevo."
+
+options:
+  settingsHeader: "Ajustes"
+  settingsSubtitle: "Tus ajustes se sincronizan automáticamente entre los dispositivos en los que hayas iniciado sesión en tu navegador."
+  loading: "Cargando ajustes..."
+  loadFailed: "Error al cargar los ajustes"
+  saveFailed: "Error al guardar los ajustes. Inténtalo de nuevo."
+
+  aboutHeader: "Acerca de"
+  version: "Versión $1 · Gratis y sin anuncios"
+
+  language: "Idioma"
+  languageAuto: "Automático (idioma del navegador)"
+
+  discordCommunity: "Comunidad de Discord"
+  discordCta1: "¿Tienes una pregunta? Únete a"
+  discordCta2: "¿Necesitas ayuda? Únete a"
+  discordCta3: "¿Tienes una sugerencia? Únete a"
+  discordCta4: "¿Quieres charlar? Únete a"
+  discordCta5: "¿Te gusta la productividad? Únete a"
+  discordCta6: "¿Tienes comentarios? Únete a"
+
+toggles:
+  recommendations:
+    label: "Desactivar recomendaciones"
+    tooltip: "Oculta las publicaciones recomendadas de tu feed"
+  explore:
+    label: "Desactivar la página Explorar"
+    tooltip: "Desactiva el acceso a la página Explorar"
+  reels:
+    label: "Desactivar la página de Reels"
+    tooltip: "Desactiva el acceso a la página de Reels"
+  suggestedFriends:
+    label: "Desactivar amigos sugeridos"
+    tooltip: "Oculta las secciones de amigos sugeridos"
+  comments:
+    label: "Desactivar comentarios"
+    tooltip: "Oculta las secciones de comentarios en las publicaciones"
+  hideStories:
+    label: "Ocultar historias en la página principal"
+    tooltip: "Oculta la barra de historias del feed principal"

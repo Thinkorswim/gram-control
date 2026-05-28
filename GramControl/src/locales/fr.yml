@@ -1,0 +1,51 @@
+extName: "GramControl – Bloquer les distractions d'Instagram"
+extShortName: "GramControl"
+extDescription: "Limite les distractions d'Instagram comme les recommandations, les Reels, les commentaires et les suggestions."
+
+appName: "Instagram Control"
+
+popup:
+  loading: "Chargement des paramètres..."
+  loadFailed: "Échec du chargement des paramètres"
+  saveFailed: "Échec de l'enregistrement des paramètres. Veuillez réessayer."
+
+options:
+  settingsHeader: "Paramètres"
+  settingsSubtitle: "Vos paramètres se synchronisent automatiquement sur tous les appareils où vous êtes connecté à votre navigateur."
+  loading: "Chargement des paramètres..."
+  loadFailed: "Échec du chargement des paramètres"
+  saveFailed: "Échec de l'enregistrement des paramètres. Veuillez réessayer."
+
+  aboutHeader: "À propos"
+  version: "Version $1 · Gratuit et sans publicité"
+
+  language: "Langue"
+  languageAuto: "Automatique (langue du navigateur)"
+
+  discordCommunity: "Communauté Discord"
+  discordCta1: "Une question ? Rejoignez le"
+  discordCta2: "Besoin d'aide ? Rejoignez le"
+  discordCta3: "Une suggestion ? Rejoignez le"
+  discordCta4: "Envie de discuter ? Rejoignez le"
+  discordCta5: "Vous aimez la productivité ? Rejoignez le"
+  discordCta6: "Un retour à donner ? Rejoignez le"
+
+toggles:
+  recommendations:
+    label: "Désactiver les recommandations"
+    tooltip: "Masquer les publications recommandées de votre fil"
+  explore:
+    label: "Désactiver la page Explorer"
+    tooltip: "Désactiver l'accès à la page Explorer"
+  reels:
+    label: "Désactiver la page Reels"
+    tooltip: "Désactiver l'accès à la page Reels"
+  suggestedFriends:
+    label: "Désactiver les suggestions d'amis"
+    tooltip: "Masquer les sections de suggestions d'amis"
+  comments:
+    label: "Désactiver les commentaires"
+    tooltip: "Masquer les sections de commentaires sous les publications"
+  hideStories:
+    label: "Masquer les Stories de la page principale"
+    tooltip: "Masquer la barre de Stories du fil principal"

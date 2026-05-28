@@ -1,0 +1,51 @@
+extName: "GramControl – Instagram dikkat dağıtıcılarını engelle"
+extShortName: "GramControl"
+extDescription: "Öneriler, Reels, yorumlar ve arkadaş önerileri gibi Instagram'daki dikkat dağıtıcı öğeleri azalt."
+
+appName: "Instagram Control"
+
+popup:
+  loading: "Ayarlar yükleniyor..."
+  loadFailed: "Ayarlar yüklenemedi"
+  saveFailed: "Ayarlar kaydedilemedi. Lütfen tekrar deneyin."
+
+options:
+  settingsHeader: "Ayarlar"
+  settingsSubtitle: "Ayarlarınız, tarayıcınızda oturum açtığınız tüm cihazlar arasında otomatik olarak senkronize edilir."
+  loading: "Ayarlar yükleniyor..."
+  loadFailed: "Ayarlar yüklenemedi"
+  saveFailed: "Ayarlar kaydedilemedi. Lütfen tekrar deneyin."
+
+  aboutHeader: "Hakkında"
+  version: "Sürüm $1 · Ücretsiz ve reklamsız"
+
+  language: "Dil"
+  languageAuto: "Otomatik (tarayıcı dili)"
+
+  discordCommunity: "Discord topluluğu"
+  discordCta1: "Sorunuz mu var?"
+  discordCta2: "Yardıma mı ihtiyacınız var?"
+  discordCta3: "Bir öneriniz mi var?"
+  discordCta4: "Sohbet etmek ister misiniz?"
+  discordCta5: "Üretkenliği sever misiniz?"
+  discordCta6: "Geri bildiriminiz mi var?"
+
+toggles:
+  recommendations:
+    label: "Önerileri devre dışı bırak"
+    tooltip: "Akışınızdaki önerilen gönderileri gizler"
+  explore:
+    label: "Keşfet sayfasını devre dışı bırak"
+    tooltip: "Keşfet sayfasına erişimi devre dışı bırakır"
+  reels:
+    label: "Reels sayfasını devre dışı bırak"
+    tooltip: "Reels sayfasına erişimi devre dışı bırakır"
+  suggestedFriends:
+    label: "Önerilen arkadaşları devre dışı bırak"
+    tooltip: "Önerilen arkadaşlar bölümlerini gizler"
+  comments:
+    label: "Yorumları devre dışı bırak"
+    tooltip: "Gönderilerdeki yorum bölümlerini gizler"
+  hideStories:
+    label: "Ana sayfada Hikayeleri gizle"
+    tooltip: "Ana akıştaki Hikayeler şeridini gizler"

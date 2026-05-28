@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
 import "./style.css";
 import "~/assets/global.css";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Cog } from "lucide-react";
 import { Settings } from "../models/Settings";
 import { Button } from "@/components/ui/button";
 import { SettingsToggles } from "@/components/SettingsToggles";
 import { loadSettings, saveSettings } from "@/lib/settings";
+import { t, useLocale } from "@/lib/i18n";
 
 function Popup() {
+  useLocale();
   const [settings, setSettings] = useState<Settings>(new Settings());
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -23,7 +25,7 @@ function Popup() {
         setSettings(loadedSettings.settings);
       } catch (err) {
         console.error("Error loading settings:", err);
-        setError("Failed to load settings");
+        setError(t("popup.loadFailed"));
       } finally {
         setIsLoading(false);
       }
@@ -40,7 +42,7 @@ function Popup() {
       setIsSaving(true);
       await saveSettings(updatedSettings);
     } catch (err) {
-      setError("Failed to save settings. Please try again.");
+      setError(t("popup.saveFailed"));
     } finally {
       setIsSaving(false);
     }
@@ -59,7 +61,7 @@ function Popup() {
             className="w-5 h-5 mb-0.5"
           />
           <div className="text-primary w-full ml-2 font-black text-base">
-            Instagram Control
+            {t("appName")}
           </div>
         </div>
 
@@ -69,6 +71,10 @@ function Popup() {
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
             </div>
           )}
+          <Cog
+            className="w-5 h-5 text-primary cursor-pointer"
+            onClick={() => browser.runtime.openOptionsPage()}
+          />
         </div>
       </div>
 
@@ -84,7 +90,7 @@ function Popup() {
       {isLoading && (
         <div className="px-5 py-8 flex flex-col items-center space-y-3">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-          <p className="text-sm text-gray-600">Loading settings...</p>
+          <p className="text-sm text-gray-600">{t("popup.loading")}</p>
         </div>
       )}
 

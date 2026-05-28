@@ -1,0 +1,51 @@
+extName: "GramControl – Blokir Distraksi Instagram"
+extShortName: "GramControl"
+extDescription: "Kurangi distraksi di Instagram seperti rekomendasi, Reels, komentar, dan saran."
+
+appName: "Instagram Control"
+
+popup:
+  loading: "Memuat pengaturan..."
+  loadFailed: "Gagal memuat pengaturan"
+  saveFailed: "Gagal menyimpan pengaturan. Silakan coba lagi."
+
+options:
+  settingsHeader: "Pengaturan"
+  settingsSubtitle: "Pengaturan Anda disinkronkan secara otomatis di semua perangkat tempat Anda masuk ke browser."
+  loading: "Memuat pengaturan..."
+  loadFailed: "Gagal memuat pengaturan"
+  saveFailed: "Gagal menyimpan pengaturan. Silakan coba lagi."
+
+  aboutHeader: "Tentang"
+  version: "Versi $1 · Gratis & tanpa iklan"
+
+  language: "Bahasa"
+  languageAuto: "Otomatis (bahasa browser)"
+
+  discordCommunity: "Komunitas Discord"
+  discordCta1: "Punya pertanyaan? Gabung ke"
+  discordCta2: "Butuh bantuan? Gabung ke"
+  discordCta3: "Punya saran? Gabung ke"
+  discordCta4: "Ingin ngobrol? Gabung ke"
+  discordCta5: "Suka produktivitas? Gabung ke"
+  discordCta6: "Punya masukan? Gabung ke"
+
+toggles:
+  recommendations:
+    label: "Nonaktifkan rekomendasi"
+    tooltip: "Sembunyikan postingan rekomendasi dari feed Anda"
+  explore:
+    label: "Nonaktifkan halaman Jelajah"
+    tooltip: "Nonaktifkan akses ke halaman Jelajah"
+  reels:
+    label: "Nonaktifkan halaman Reels"
+    tooltip: "Nonaktifkan akses ke halaman Reels"
+  suggestedFriends:
+    label: "Nonaktifkan saran teman"
+    tooltip: "Sembunyikan bagian saran teman"
+  comments:
+    label: "Nonaktifkan komentar"
+    tooltip: "Sembunyikan bagian komentar pada postingan"
+  hideStories:
+    label: "Sembunyikan Cerita dari halaman utama"
+    tooltip: "Sembunyikan baris Cerita dari feed utama"
