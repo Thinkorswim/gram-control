@@ -11,6 +11,8 @@ export default defineContentScript({
     let commentObserverActive = false;
     let homeLinksObserverActive = false;
     const STORY_TRAY_HIDE_STYLE_ID = 'gram-control-hide-story-tray-suggestions';
+    const EXPLORE_HIDDEN_ATTR = 'data-gram-control-hidden';
+    const SEARCH_COLLAPSED_ATTR = 'data-gram-control-collapsed';
 
     // Load settings by requesting from the background script
     const loadCurrentSettings = async (): Promise<Settings> => {
@@ -52,6 +54,117 @@ export default defineContentScript({
           currentElement = currentElement.parentElement;
         }
       }
+    };
+
+    // Instagram's Search nav button now navigates to /explore/ instead of opening
+    // a drawer, so the landing page has to be handled separately from the nav link.
+    // Only the bare landing page counts: /explore/search/keyword/?q=… and
+    // /explore/tags/… are deliberate searches and stay untouched.
+    const isExploreLanding = () => location.pathname.replace(/\/+$/, '') === '/explore';
+
+    // Tracks whether there is anything to undo, so the common case (every other
+    // page, every observer tick) costs one boolean instead of two DOM queries
+    let exploreGridHidden = false;
+
+    const restoreExploreGrid = () => {
+      if (!exploreGridHidden) return;
+      exploreGridHidden = false;
+      document
+        .querySelectorAll<HTMLElement>(`[${EXPLORE_HIDDEN_ATTR}="explore"]`)
+        .forEach((el) => {
+          el.style.removeProperty('display');
+          el.removeAttribute(EXPLORE_HIDDEN_ATTR);
+        });
+      document
+        .querySelectorAll<HTMLElement>(`[${SEARCH_COLLAPSED_ATTR}]`)
+        .forEach((el) => {
+          el.style.removeProperty('min-height');
+          el.style.removeProperty('height');
+          el.removeAttribute(SEARCH_COLLAPSED_ATTR);
+        });
+    };
+
+    // The search panel reserves roughly 570px for results that only render once
+    // you type. With the grid below it gone that reads as a void, so relax the
+    // height floor and let it size to its content — results still expand it.
+    const collapseSearchGap = (searchBranch: HTMLElement, searchInput: HTMLElement) => {
+      const stopAt = searchBranch.parentElement;
+      // Bottom-up: collapsing an inner container shrinks the ones above it, so
+      // by the time they are measured their slack has already gone
+      let node = searchInput.parentElement;
+      while (node && node !== stopAt) {
+        if (!node.getAttribute(SEARCH_COLLAPSED_ATTR)) {
+          const lastChild = node.lastElementChild;
+          const slack = lastChild
+            ? node.getBoundingClientRect().height - lastChild.getBoundingClientRect().height
+            : 0;
+          if (slack > 24) {
+            node.setAttribute(SEARCH_COLLAPSED_ATTR, 'search');
+            node.style.setProperty('min-height', '0', 'important');
+            node.style.setProperty('height', 'auto', 'important');
+          }
+        }
+        node = node.parentElement;
+      }
+    };
+
+    const hideExploreElement = (el: HTMLElement) => {
+      if (el.getAttribute(EXPLORE_HIDDEN_ATTR)) return false;
+      el.setAttribute(EXPLORE_HIDDEN_ATTR, 'explore');
+      el.style.setProperty('display', 'none', 'important');
+      exploreGridHidden = true;
+      return true;
+    };
+
+    // Hide the recommendation grid on /explore/ while leaving the search bar usable
+    const hideExploreGrid = () => {
+      if (!settings?.explorePageDisabled || !isExploreLanding()) {
+        restoreExploreGrid();
+        return;
+      }
+
+      const main = document.querySelector('main');
+      if (!main) return;
+
+      const gridLink = main.querySelector('a[href*="/p/"], a[href*="/reel/"]');
+      if (!gridLink) return; // grid hasn't rendered yet; the observer will re-fire
+
+      // Resolve the search branch: the ancestor of the input whose own parent
+      // also holds the grid. Structural on purpose — Instagram's class names
+      // churn between releases.
+      const searchInput = main.querySelector('input');
+      let searchBranch: HTMLElement | null = null;
+      if (searchInput) {
+        let node: HTMLElement = searchInput;
+        while (node.parentElement && !node.parentElement.contains(gridLink)) {
+          node = node.parentElement;
+        }
+        // Guard against a layout where the grid lives inside the search branch
+        if (node.parentElement && !node.contains(gridLink)) searchBranch = node;
+      }
+
+      if (searchBranch) {
+        // Everything after the search branch is recommendation chrome: the
+        // "For you / Not personalized" tab strip and the grid itself.
+        for (
+          let sibling = searchBranch.nextElementSibling;
+          sibling;
+          sibling = sibling.nextElementSibling
+        ) {
+          hideExploreElement(sibling as HTMLElement);
+        }
+
+        if (exploreGridHidden && searchInput) collapseSearchGap(searchBranch, searchInput);
+        return;
+      }
+
+      // Fallback: no search input inside <main> — it may live in the nav — so
+      // walk up from the grid to the outermost container that still excludes it.
+      let node = gridLink as HTMLElement;
+      while (node.parentElement && node.parentElement !== main) {
+        node = node.parentElement;
+      }
+      hideExploreElement(node);
     };
 
     const removeReelsPageLink = () => {
@@ -488,6 +601,7 @@ export default defineContentScript({
 
       const removeElements = () => {
         removeExplorePageLink();
+        hideExploreGrid();
         removeReelsPageLink();
         removeSuggestedForYouOnMainPage();
         applyStoryTraySuggestionStyle();
@@ -511,6 +625,8 @@ export default defineContentScript({
         if (location.href !== currentUrl) {
           currentUrl = location.href;
           waitForPopupCommentsAndRemove();
+          // Covers both arriving at and leaving /explore/ via SPA navigation
+          hideExploreGrid();
         }
       });
       observers.push(urlChangeObserver);
@@ -533,6 +649,8 @@ export default defineContentScript({
                 
                 if (hasExplore ||
                   hasReels ||
+                  (settings?.explorePageDisabled && isExploreLanding() &&
+                    element.querySelector?.('a[href*="/p/"], a[href*="/reel/"]')) ||
                   (settings?.recommendationsDisabled && element.querySelector?.('div.x1dr59a3.x13vifvy.x7vhb2i.x6bx242')) ||
                   (settings?.recommendationsDisabled && element.classList?.contains('x1dr59a3') && element.classList?.contains('x13vifvy')) ||
                   (settings?.suggestedFriendsDisabled && element.querySelector?.('header.xrvj5dj.xl463y0.x1ec4g5p')) ||
@@ -579,6 +697,7 @@ export default defineContentScript({
         // Re-run all the removal functions when settings change
         const removeElements = () => {
           removeExplorePageLink();
+          hideExploreGrid();
           removeReelsPageLink();
           removeSuggestedForYouOnMainPage();
           applyStoryTraySuggestionStyle();
